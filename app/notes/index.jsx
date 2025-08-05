@@ -29,7 +29,7 @@ const NoteScreen = () => {
 
     const fetchNotes = async () => {
                 setLoading(true);
-                const response = await noteService.getNotes();
+                const response = await noteService.getNotes(user.$id);
                 if (response.error) {
                     setError(response.error);
                     Alert.alert('Error', response.error.message || 'Failed to fetch notes');
@@ -42,7 +42,7 @@ const NoteScreen = () => {
     // Add new note
     const addNote = async () => {
         if (newNote.trim() === '') return;
-        const response = await noteService.AddNote(newNote);
+        const response = await noteService.AddNote(user.$id,newNote);
 
         if (response.error) {
             Alert.alert('Error', response.error.message || 'Failed to add note');
@@ -95,6 +95,9 @@ const NoteScreen = () => {
             ) : (
                 <>
                 {error && <Text style={styles.errorText}>{error.message || error}</Text>}
+                { notes.length === 0 && !error && (
+                    <Text style={{textAlign: 'center', marginTop: 20}}>No notes available. Tap the button below to add a new note.</Text>
+                )}
                 <NoteList notes={notes} onDelete={deleteNote} onEdit={editNote}/>   
                 </>
             )}
